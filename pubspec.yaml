@@ -1,0 +1,66 @@
+name: lifeos
+description: "LifeOS — a personal life management app."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management + dependency injection (see architecture doc §3, §9).
+  # Chosen over Provider for compile-time-safe reads, built-in async
+  # loading/error handling, and because it doubles as our DI mechanism.
+  flutter_riverpod: ^3.3.2
+
+  # Declarative, URL-based navigation (see architecture doc §5).
+  # Chosen over plain Navigator because features will need nested routes
+  # (e.g. Tasks -> Task Detail) without deeply nested Navigator widgets.
+  go_router: ^16.2.0
+
+  # SQLite persistence (Sprint 6).
+  # Chosen over drift: no code-generation step, SQL is explicit and
+  # auditable, migrations are plain Dart. Min SDK >=3.7 matches ours.
+  sqflite: ^2.4.2
+
+  # Cross-platform path joining for the DB file location.
+  # sqflite pulls this transitively; declared here because DatabaseService
+  # calls join() directly.
+  path: ^1.9.0
+
+  # Default Flutter icon set.
+  cupertino_icons: ^1.0.8
+
+  # YAML frontmatter parsing for Obsidian-authored markdown files (Sprint 15).
+  # Pure Dart, maintained by the Dart team — no Flutter dependency, safe to
+  # use from the Data layer. Used only to populate Document.frontmatter/tags
+  # on read; ObsidianDocumentRepository.save() never re-serializes YAML, so
+  # this package has no bearing on what's written back to disk. Flagged as
+  # needed for exactly this purpose in DOCUMENT_ARCHITECTURE.md §10 Risks.
+  yaml: ^3.1.2
+
+  # Resolves the platform-specific app documents directory (V2-02).
+  # Quick Clipboard needs durable local storage ("save locally, autosave")
+  # that survives app restarts, but V2-02's regression check explicitly
+  # forbids SQLite changes — so the existing database can't be used, and
+  # there was no other cross-platform way to find a writable, persistent
+  # directory (filesystem_service.dart's own doc comment already flagged
+  # this exact package as needed and deferred). Genuinely required, not
+  # a convenience choice.
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Standard Flutter/Dart lint rules — catches common mistakes at analysis
+  # time (unused imports, missing const, etc.) before they become bugs.
+  flutter_lints: ^5.0.0
+
+  # In-memory SQLite for repository unit tests (non-mobile host runner).
+  sqflite_common_ffi: ^2.3.3
+
+flutter:
+  uses-material-design: true

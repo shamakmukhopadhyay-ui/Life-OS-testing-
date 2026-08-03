@@ -1,0 +1,8 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Keep constructors const where possible — small perf win, and it's
+    # the kind of consistency habit that matters more as the codebase grows.
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
